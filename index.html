@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tools Page</title>
+
+  <style>
+    /* ----------------------------------------------------
+       👉 ADD YOUR BACKGROUND IMAGE HERE
+       Replace "your-image.jpg" with your file name or URL
+       ---------------------------------------------------- */
+    body {
+      background-image: url(profile.jpg);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      /* Optional: makes text readable on bright images */
+      backdrop-filter: blur(2px);
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    /* BIG ICONS */
+    .icons {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      margin-top: 80px;
+      font-size: 80px;
+      cursor: pointer;
+    }
+
+    .icons span:hover {
+      transform: scale(1.2);
+      transition: 0.2s;
+    }
+
+    /* TOOL BOX STYLE */
+    .tool {
+      display: none;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      width: 380px;
+      margin: auto;
+      border-radius: 15px;
+      box-shadow: 0 0 12px gray;
+      margin-top: 30px;
+      backdrop-filter: blur(5px);
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      font-size: 22px;
+      text-align: right;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 12px;
+      font-size: 20px;
+      margin: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🔧 Tools Page</h1>
+
+  <!-- BIG ICONS -->
+  <div class="icons">
+    <span onclick="openTool('clock')">🕒</span>
+    <span onclick="openTool('calculator')">🧮</span>
+    <span onclick="openTool('calendar')">📅</span>
+  </div>
+
+  <!-- CLOCK TOOL -->
+  <div id="clock" class="tool">
+    <h2>🕒 Clock</h2>
+
+    <select id="timezone" onchange="updateClock()">
+      <option value="Asia/Kolkata">India (IST)</option>
+      <option value="America/New_York">USA (EST)</option>
+      <option value="America/Los_Angeles">USA (PST)</option>
+      <option value="Europe/London">UK (GMT)</option>
+      <option value="Asia/Tokyo">Japan (JST)</option>
+      <option value="Asia/Dubai">UAE (GST)</option>
+    </select>
+
+    <h1 id="time" style="font-size:40px;margin-top:20px;"></h1>
+  </div>
+
+  <!-- CALCULATOR TOOL -->
+  <div id="calculator" class="tool">
+    <h2>🧮 Calculator</h2>
+    <input id="display" readonly>
+
+    <div>
+      <script>
+        const btns = ["7","8","9","+","4","5","6","-","1","2","3","*","C","0","=","/"];
+        document.write(btns.map(b => 
+          `<button onclick="press('${b}')">${b}</button>`
+        ).join(""));
+      </script>
+    </div>
+  </div>
+
+  <!-- CALENDAR TOOL -->
+  <div id="calendar" class="tool">
+    <h2>📅 Calendar</h2>
+    <h1 id="date"></h1>
+  </div>
+
+  <script>
+    /* --------- SHOW ONLY SELECTED TOOL --------------- */
+    function openTool(tool) {
+      document.querySelectorAll('.tool').forEach(t => t.style.display = "none");
+      document.getElementById(tool).style.display = "block";
+
+      if (tool === "clock") {
+        updateClock(); 
+        if (!window.clockStarted) {
+          setInterval(updateClock, 1000);
+          window.clockStarted = true;
+        }
+      }
+    }
+
+    /* --------- CLOCK FUNCTION ----------------------- */
+    function updateClock() {
+      const tz = document.getElementById("timezone").value;
+      const now = new Date();
+
+      const time = now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZone: tz
+      });
+
+      document.getElementById("time").innerText = time;
+    }
+
+    /* --------- CALCULATOR FUNCTION -------------------- */
+    function press(btn) {
+      const disp = document.getElementById("display");
+
+      if (btn === "C") disp.value = "";
+      else if (btn === "=") {
+        try { disp.value = eval(disp.value); }
+        catch { disp.value = "Error"; }
+      }
+      else disp.value += btn;
+    }
+
+    /* --------- CALENDAR FUNCTION ----------------------- */
+    function updateCalendar() {
+      const today = new Date();
+      const m = today.toLocaleString("default", { month: "long" });
+      document.getElementById("date").innerText =
+        `${today.getDate()} ${m}, ${today.getFullYear()}`;
+    }
+    updateCalendar();
+  </script>
+
+</body>
+</html>
